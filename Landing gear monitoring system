@@ -1,12 +1,12 @@
 import time
 from termcolor import colored  # Import for colored text
 
-# Constants
+
 MAX_DEGREE = 90  # Maximum degree for alignment
 FULL_EXTENDED = 1  # Gear fully extended signal (HIGH voltage)
 RETRACTED = 0  # Gear retracted signal (LOW voltage)
 
-# Main function
+
 def main():
     # Initialize sensor values
     gear_sensors = [0, 0, 0]  # Landing gear sensors, 0 means retracted
@@ -15,7 +15,7 @@ def main():
     
     print("Welcome to the Aircraft Landing Gear Monitoring System!")
     
-    # Menu
+
     while True:
         print("\nMenu:")
         print("1. Input Gear Status")
@@ -26,7 +26,7 @@ def main():
         choice = input("Select an option: ")
 
         if choice == '1':
-            # Update gear sensor statuses
+            
             for i in range(3):
                 gear_sensors[i] = int(input(f"Enter status for Gear {i+1} (1 for extended, 0 for retracted): "))
         elif choice == '2':
@@ -45,7 +45,7 @@ def main():
         else:
             print("Invalid option. Please select again.")
 
-# Task 4a: Monitor the landing gear status and activate LEDs
+
 def monitor_landing_gear(gear_sensors, direction_sensor, gear_down_switch):
     if gear_down_switch:
         # Check if all gears are extended
@@ -54,7 +54,7 @@ def monitor_landing_gear(gear_sensors, direction_sensor, gear_down_switch):
         else:
             illuminate_red_led()
 
-# Task 4b: Create a log (black box) for landing conditions
+
 def log_black_box(gear_sensors, direction_sensor, lift, led_status):
     log = {
         "gear_sensors": [bin(sensor) for sensor in gear_sensors],
@@ -64,11 +64,11 @@ def log_black_box(gear_sensors, direction_sensor, lift, led_status):
     }
     print("Black Box Log:", log)
 
-# Task 4c: Convert analogue sensor to binary
+
 def convert_directional_sensor_to_binary(direction_sensor):
     return bin(int(direction_sensor / 10))  # Convert 0 to 90 degrees to a binary range (0 to 9)
 
-# Task 4d: Calculate airplane lift
+
 def calculate_lift():
     velocity = float(input("Enter the velocity of the airplane (m/s): "))
     wing_area = float(input("Enter the wing area of the airplane (m^2): "))
@@ -78,14 +78,14 @@ def calculate_lift():
     lift_coefficient = 1.5  # Simplified constant for this problem
     lift = 0.5 * air_density * velocity ** 2 * wing_area * lift_coefficient
 
-    # Discretize and convert to binary
+
     lift_binary = discretize_lift(lift)
     print(f"Calculated Lift (in binary): {bin(lift_binary)}")
     
-    # Log the lift into black box
+    
     log_black_box([0, 0, 0], 0, lift_binary, "N/A")
 
-# Discretize lift to binary
+
 def discretize_lift(lift):
     if lift < 1000:
         return 1
@@ -98,14 +98,14 @@ def discretize_lift(lift):
     else:
         return 5
 
-# Task 4a: Illuminate green LED for proper gear extension
+
 def illuminate_green_led():
     print(colored("Green LED illuminated: All gears are properly extended.", 'green'))  # Green color text
     log_black_box([FULL_EXTENDED, FULL_EXTENDED, FULL_EXTENDED], 0, 0, "Green")
     time.sleep(10)  # LED stays on for 10 seconds
     print(colored("Green LED off.", 'green'))
 
-# Task 4a: Illuminate red LED for improper gear extension or alignment
+
 def illuminate_red_led():
     print(colored("Red LED illuminated: Gear malfunction or misalignment detected.", 'red'))  # Red color text
     log_black_box([RETRACTED, RETRACTED, RETRACTED], 90, 0, "Red")
